@@ -8,11 +8,11 @@ Author: Michal Nowikowski <godfryd@gmail.com>
 License: MIT
 """
 
-import numpy
+import numpy as np
 
 try:
-    import pylab
-    from matplotlib import pyplot
+    #import pylab
+    import matplotlib.pyplot as plt
     mpl_present = True
 except ImportError:
     mpl_present = False
@@ -73,13 +73,14 @@ def test_beyond_limits(data, center, lcl, ucl):
     return data[0] > ucl or data[0] < lcl
 
 def test_violating_runs(data, center, lcl, ucl):
-    for i in xrange(1, len(data)):
+    for i in range(1, len(data)):
         if (data[i-1] - center)*(data[i] - center) < 0:
             return False
     return True
 
 # n         2      3      4      5      6      7      8      9      10
 A2 = [0,0, 1.880, 1.023, 0.729, 0.577, 0.483, 0.419, 0.373, 0.337, 0.308]
+d2 = [0,0, 1.128, 1.693, 2.059, 2.326, 2.534, 2.704, 2.847, 2.970, 3.078]
 D3 = [0,0, 0,     0,     0,     0,     0,     0.076, 0.136, 0.184, 0.223]
 D4 = [0,0, 3.267, 2.575, 2.282, 2.115, 2.004, 1.924, 1.864, 1.816, 1.777]
 # n   0 1      2      3      4      5      6      7      8      9     10     11     12     13     14     15       20     25
@@ -91,41 +92,39 @@ B6 = [0,0, 2.606, 2.276, 2.088, 1.964, 1.874, 1.806, 1.751, 1.707, 1.669, 1.637,
 A3 = [0,0, 2.659, 1.954, 1.628, 1.427, 1.287, 1.182, 1.099, 1.032, 0.975, 0.927, 0.886, 0.850, 0.817, 0.789]#, 0.680, 0.606]
 
 def get_stats_x_mr_x(data, size):
-    assert size == 1
-    center = numpy.mean(data)
+    assert size == 1, "size must be equal to 1 for this chart type"
+    center = np.mean(data)
     sd = 0
-    for i in xrange(len(data)-1):
+    for i in range(len(data)-1):
         sd += abs(data[i] - data[i+1])
     sd /= len(data) - 1
-    d2 = 1.128
-    lcl = center - 3*sd/d2
-    ucl = center + 3*sd/d2
+    lcl = center - 3 * sd / d2[size + 1]
+    ucl = center + 3 * sd / d2[size + 1]
     return center, lcl, ucl
 
 def get_stats_x_mr_mr(data, size):
-    assert size == 1
+    assert size == 1, "size must be equal to 1 for this chart type"
     sd = 0
-    for i in xrange(len(data)-1):
+    for i in range(len(data)-1):
         sd += abs(data[i] - data[i+1])
     sd /= len(data) - 1
-    d2 = 1.128
     center = sd
     lcl = 0
-    ucl = center + 3*sd/d2
+    ucl = center + 3*sd/d2[size + 1]
     return center, lcl, ucl
 
 def get_stats_x_bar_r_x(data, size):
     n = size
-    assert n >= 2
-    assert n <= 10
-
+    assert n >= 2, "size must be >=2 for this chart type; please provide an argument sizes to the call to Spc that is >=2"
+    assert n <= 10, "size must be <=10 for this chart type; please provide an argument sizes to the call to Spc that is <=10"
+    
     Rsum = 0
     for xset in data:
-        assert len(xset) == n
+        assert len(xset) == n, "shape of given data ({0}) does not agree with given size of {1}".format(np.array(data).shape, size)
         Rsum += max(xset) - min(xset)
     Rbar = Rsum / len(data)
 
-    Xbar = numpy.mean(data)
+    Xbar = np.mean(data)
 
     center = Xbar
     lcl = center - A2[n]*Rbar
@@ -134,12 +133,12 @@ def get_stats_x_bar_r_x(data, size):
 
 def get_stats_x_bar_r_r(data, size):
     n = size
-    assert n >= 2
-    assert n <= 10
-
+    assert n >= 2, "size must be >=2 for this chart type; please provide an argument sizes to the call to Spc that is >=2"
+    assert n <= 10, "size must be <=10 for this chart type; please provide an argument sizes to the call to Spc that is <=10"
+    
     Rsum = 0
     for xset in data:
-        assert len(xset) == n
+        assert len(xset) == n, "shape of given data ({0}) does not agree with given size of {1}".format(np.array(data).shape, size)
         Rsum += max(xset) - min(xset)
     Rbar = Rsum / len(data)
 
@@ -150,11 +149,12 @@ def get_stats_x_bar_r_r(data, size):
 
 def get_stats_x_bar_s_x(data, size):
     n = size
-    assert n >= 2
-    assert n <= 10
+    assert n >= 2, "size must be >=2 for this chart type; please provide an argument sizes to the call to Spc that is >=2"
+    assert n <= 10, "size must be <=10 for this chart type; please provide an argument sizes to the call to Spc that is <=10"
+    assert np.array(data).shape[1] == n, "shape of given data ({0}) does not agree with given size of {1}".format(np.array(data).shape, size)
 
-    Sbar = numpy.mean(numpy.std(data, 1, ddof=1))
-    Xbar = numpy.mean(data)
+    Sbar = np.mean(np.std(data, 1, ddof=1))
+    Xbar = np.mean(data)
 
     center = Xbar
     lcl = center - A3[n]*Sbar
@@ -163,10 +163,11 @@ def get_stats_x_bar_s_x(data, size):
 
 def get_stats_x_bar_s_s(data, size):
     n = size
-    assert n >= 2
-    assert n <= 10
+    assert n >= 2, "size must be >=2 for this chart type; please provide an argument sizes to the call to Spc that is >=2"
+    assert n <= 10, "size must be <=10 for this chart type; please provide an argument sizes to the call to Spc that is <=10"
+    assert np.array(data).shape[1] == n, "shape of given data ({0}) does not agree with given size of {1}".format(np.array(data).shape, size)
 
-    Sbar = numpy.mean(numpy.std(data, 1, ddof=1))
+    Sbar = np.mean(np.std(data, 1, ddof=1))
 
     center = Sbar
     lcl = B3[n]*Sbar
@@ -175,10 +176,10 @@ def get_stats_x_bar_s_s(data, size):
 
 def get_stats_p(data, size):
     n = size
-    assert n > 1
+    assert n > 1, "size must be >1 for this chart type; please provide an argument sizes to the call to Spc that is >1"
 
     pbar = float(sum(data)) / (n * len(data))
-    sd = numpy.sqrt(pbar*(1-pbar)/n)
+    sd = np.sqrt(pbar*(1-pbar)/n)
 
     center = pbar
     lcl = center - 3*sd
@@ -191,10 +192,10 @@ def get_stats_p(data, size):
 
 def get_stats_np(data, size):
     n = size
-    assert n > 1
+    assert n > 1, "size must be >1 for this chart type; please provide an argument sizes to the call to Spc that is >1"
 
     pbar = float(sum(data)) / (n * len(data))
-    sd = numpy.sqrt(n*pbar*(1-pbar))
+    sd = np.sqrt(n*pbar*(1-pbar))
 
     center = n*pbar
     lcl = center - 3*sd
@@ -206,26 +207,26 @@ def get_stats_np(data, size):
     return center, lcl, ucl
 
 def get_stats_c(data, size):
-    cbar = numpy.mean(data)
+    cbar = np.mean(data)
 
     center = cbar
-    lcl = center - 3*numpy.sqrt(cbar)
+    lcl = center - 3*np.sqrt(cbar)
     if lcl < 0:
         lcl = 0
-    ucl = center + 3*numpy.sqrt(cbar)
+    ucl = center + 3*np.sqrt(cbar)
     return center, lcl, ucl
 
 def get_stats_u(data, size):
     n = size
-    assert n > 1
+    assert n > 1, "size must be >1 for this chart type; please provide an argument sizes to the call to Spc that is >1"
 
     cbar = float(sum(data))/(len(data)*n)
 
     center = cbar
-    lcl = center - 3*numpy.sqrt(cbar/n)
+    lcl = center - 3*np.sqrt(cbar/n)
     if lcl < 0:
         lcl = 0
-    ucl = center + 3*numpy.sqrt(cbar/n)
+    ucl = center + 3*np.sqrt(cbar/n)
     return center, lcl, ucl
 
 def prepare_data_none(data, size):
@@ -234,7 +235,7 @@ def prepare_data_none(data, size):
 def prepare_data_x_bar_rs_x(data, size):
     data2 = []
     for xset in data:
-        data2.append(numpy.mean(xset))
+        data2.append(np.mean(xset))
     return data2
 
 def prepare_data_x_bar_r_r(data, size):
@@ -246,12 +247,12 @@ def prepare_data_x_bar_r_r(data, size):
 def prepare_data_x_bar_s_s(data, size):
     data2 = []
     for xset in data:
-        data2.append(numpy.std(xset, ddof=1))
+        data2.append(np.std(xset, ddof=1))
     return data2
 
 def prepare_data_x_mr(data, size):
     data2 = [0]
-    for i in xrange(len(data)-1):
+    for i in range(len(data)-1):
         data2.append(abs(data[i] - data[i+1]))
     return data2
 
@@ -302,18 +303,37 @@ class Spc(object):
 
     :arguments:
       data
-       user data as flat array
+          user data as flat array
+      chart_type
+          type of control chart, one of:
+             CHART_X_BAR_R_X
+             CHART_X_BAR_R_R
+             CHART_X_BAR_S_X
+             CHART_X_BAR_S_S
+             CHART_X_MR_X
+             CHART_X_MR_MR
+             CHART_P
+             CHART_NP
+             CHART_C
+             CHART_U
+             CHART_EWMA
+             CHART_CUSUM
+             CHART_THREE_WAY
+             CHART_TIME_SERIES
+      rules
+          rule set to apply (default is RULES_BASIC). One of:
+             RULES_BASIC, RULES_WECO, RULES_NELSON, RULES_ALL
 
     **Usage**
 
     >>> s = Spc([1, 2, 3, 3, 2, 1, 3, 8], CHART_X_MR_X)
     >>> s.get_stats()
-    (2.875, 1, 0.21542553191489322, 5.5345744680851068)
+    (2.875, -1.304331306990882, 7.054331306990882)
     >>> s.get_violating_points()
     {'1 beyond 3*sigma': [7]}
     """
 
-    def __init__(self, data, chart_type, rules=RULES_BASIC, newdata=[], sizes=None):
+    def __init__(self, data, chart_type, rules=RULES_BASIC, sizes=None):
         self.orig_data = data
         self.chart_type = chart_type
         self.rules = rules
@@ -338,7 +358,7 @@ class Spc(object):
         else:
             rs = self.rules
         points = {}
-        for i in xrange(len(self._data)):
+        for i in range(len(self._data)):
             for r in rs:
                 func, points_num = RULES_FUNCS[r]
                 if func == None or i <= points_num - 1:
@@ -352,23 +372,30 @@ class Spc(object):
         if not mpl_present:
             raise Exception("matplotlib not installed")
         if ax == None:
-            ax = pylab
+            ax = plt.gca()
         ax.plot(self._data, "bo-")
         ax.plot([0, len(self._data)], [self.center, self.center], "k-")
         ax.plot([0, len(self._data)], [self.lcl, self.lcl], "k:")
         ax.plot([0, len(self._data)], [self.ucl, self.ucl], "k:")
+        ax.set_title(self.chart_type)
 
-        if self.violating_points.has_key(RULES_7_ON_ONE_SIDE):
-            for i in self.violating_points[RULES_7_ON_ONE_SIDE]:
-                ax.plot([i], [self._data[i]], "yo")
-        if self.violating_points.has_key(RULES_1_BEYOND_3SIGMA):
-            for i in self.violating_points[RULES_1_BEYOND_3SIGMA]:
-                ax.plot([i], [self._data[i]], "ro")
-        pylab.figtext(0.05, 0.04, "Center = %0.3f" % self.center)
-#        pylab.figtext(0.05, 0.01, "StdDev = %0.3f" % self.sd)
-        pylab.figtext(0.3, 0.04, "LCL = %0.3f" % self.lcl)
-        pylab.figtext(0.3, 0.01, "UCL = %0.3f" % self.ucl)
-        #pylab.show()
+        for i,k in enumerate(self.violating_points.keys()):
+            for i in self.violating_points[k]:
+                ax.plot([i], [self._data[i]], "C{0}o".format(i))
+                ax.annotate(k, xy=(i, self._data[i]))
+        #if RULES_7_ON_ONE_SIDE in self.violating_points:
+        #    for i in self.violating_points[RULES_7_ON_ONE_SIDE]:
+        #        ax.plot([i], [self._data[i]], "yo")
+        #if RULES_1_BEYOND_3SIGMA in self.violating_points:
+        #    for i in self.violating_points[RULES_1_BEYOND_3SIGMA]:
+        #        ax.plot([i], [self._data[i]], "ro")
+        plt.text(len(self._data) * 1.02, self.center, "Center = %0.3f" % self.center)
+        plt.text(len(self._data) * 1.02, self.lcl, "LCL = %0.3f" % self.lcl)
+        plt.text(len(self._data) * 1.02, self.ucl, "UCL = %0.3f" % self.ucl)
+        plt.xlim([0, len(self._data)])
+        fig = plt.gcf()
+        fig.tight_layout(rect=[0, 0.03, 0.86, 0.95])
+        plt.show()
 
     def get_violating_points(self, rules=[]):
         """Return points that violates rules of control chart"""
