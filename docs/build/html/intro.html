@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>spc &#8211; Statistical Process Control &mdash; spc v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+          URL_ROOT:    '',
+          VERSION:     '0.1',
+          COLLAPSE_MODINDEX: false,
+          FILE_SUFFIX: ''
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/interface.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="contents" title="Global table of contents" href="contents.html" />
+    <link rel="index" title="Global index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="spc v0.1 documentation" href="index.html" />
+    <link rel="prev" title="Welcome to spc&#8217;s documentation!" href="index.html" />
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to spc&#8217;s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">spc v0.1 documentation</a> &raquo;</li>
+      </ul>
+    </div>
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  
+  <div class="section">
+<h1 id="module-spc"><tt class="xref docutils literal"><span class="pre">spc</span></tt> &#8211; Statistical Process Control<a class="headerlink" href="#module-spc" title="Permalink to this headline">¶</a></h1>
+<p>SPC Statistical Process Control provides means to monitor process behaviour
+using statistical tools defined by Shewhart and others. The process run is shown
+as Quality Control charts (QCC).</p>
+<p>Author: Michal Nowikowski &lt;<a class="reference" href="mailto:godfryd&#37;&#52;&#48;gmail&#46;com">godfryd<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;</p>
+<p>Licence: MIT</p>
+<dl class="class">
+<dt id="spc.Spc">
+<!--[spc.Spc]-->class <tt class="descclassname">spc.</tt><tt class="descname">Spc</tt><big>(</big><em>data</em>, <em>chart_type</em>, <em>rules=</em><span class="optional">[</span>, <em>'1 beyond 3*sigma'</em>, <em>'7 on one side'</em><span class="optional">]</span>, <em>newdata=</em><span class="optional">[</span><span class="optional">]</span>, <em>sizes=None</em><big>)</big><a class="headerlink" href="#spc.Spc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main class that provides SPC analysis. It detects SPC rules violations.
+It can draw charts using matplotlib.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt>data</dt>
+<dd><p class="first last">user data as flat array</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">Spc</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">8</span><span class="p">],</span> <span class="n">CHART_I_MR</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
+<span class="go">(2.875, 1, 0.21542553191489322, 5.5345744680851068)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">get_violating_points</span><span class="p">()</span>
+<span class="go">{&#39;1 beyond 3*sigma&#39;: [7]}</span>
+</pre></div>
+<dl class="method">
+<dt id="spc.Spc.get_chart">
+<!--[spc.Spc.get_chart]--><tt class="descname">get_chart</tt><big>(</big><em>ax=None</em><big>)</big><a class="headerlink" href="#spc.Spc.get_chart" title="Permalink to this definition">¶</a></dt>
+<dd>Generate chart using matplotlib.</dd></dl>
+
+<dl class="method">
+<dt id="spc.Spc.get_stats">
+<!--[spc.Spc.get_stats]--><tt class="descname">get_stats</tt><big>(</big><big>)</big><a class="headerlink" href="#spc.Spc.get_stats" title="Permalink to this definition">¶</a></dt>
+<dd>Return basic statistics about data as tuple: (center, LCL, UCL).</dd></dl>
+
+<dl class="method">
+<dt id="spc.Spc.get_violating_points">
+<!--[spc.Spc.get_violating_points]--><tt class="descname">get_violating_points</tt><big>(</big><em>rules=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#spc.Spc.get_violating_points" title="Permalink to this definition">¶</a></dt>
+<dd>Return points that violates rules of control chart</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="spc.get_stats_c">
+<!--[spc.get_stats_c]--><tt class="descclassname">spc.</tt><tt class="descname">get_stats_c</tt><big>(</big><em>data</em>, <em>size</em><big>)</big><a class="headerlink" href="#spc.get_stats_c" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="spc.get_stats_np">
+<!--[spc.get_stats_np]--><tt class="descclassname">spc.</tt><tt class="descname">get_stats_np</tt><big>(</big><em>data</em>, <em>size</em><big>)</big><a class="headerlink" href="#spc.get_stats_np" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="spc.get_stats_p">
+<!--[spc.get_stats_p]--><tt class="descclassname">spc.</tt><tt class="descname">get_stats_p</tt><big>(</big><em>data</em>, <em>size</em><big>)</big><a class="headerlink" href="#spc.get_stats_p" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="spc.get_stats_u">
+<!--[spc.get_stats_u]--><tt class="descclassname">spc.</tt><tt class="descname">get_stats_u</tt><big>(</big><em>data</em>, <em>size</em><big>)</big><a class="headerlink" href="#spc.get_stats_u" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="spc.get_stats_x_bar_r_r">
+<!--[spc.get_stats_x_bar_r_r]--><tt class="descclassname">spc.</tt><tt class="descname">get_stats_x_bar_r_r</tt><big>(</big><em>data</em>, <em>size</em><big>)</big><a class="headerlink" href="#spc.get_stats_x_bar_r_r" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="spc.get_stats_x_bar_r_x">
+<!--[spc.get_stats_x_bar_r_x]--><tt class="descclassname">spc.</tt><tt class="descname">get_stats_x_bar_r_x</tt><big>(</big><em>data</em>, <em>size</em><big>)</big><a class="headerlink" href="#spc.get_stats_x_bar_r_x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="spc.get_stats_x_bar_s_s">
+<!--[spc.get_stats_x_bar_s_s]--><tt class="descclassname">spc.</tt><tt class="descname">get_stats_x_bar_s_s</tt><big>(</big><em>data</em>, <em>size</em><big>)</big><a class="headerlink" href="#spc.get_stats_x_bar_s_s" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="spc.get_stats_x_bar_s_x">
+<!--[spc.get_stats_x_bar_s_x]--><tt class="descclassname">spc.</tt><tt class="descname">get_stats_x_bar_s_x</tt><big>(</big><em>data</em>, <em>size</em><big>)</big><a class="headerlink" href="#spc.get_stats_x_bar_s_x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="spc.get_stats_x_mr_mr">
+<!--[spc.get_stats_x_mr_mr]--><tt class="descclassname">spc.</tt><tt class="descname">get_stats_x_mr_mr</tt><big>(</big><em>data</em>, <em>size</em><big>)</big><a class="headerlink" href="#spc.get_stats_x_mr_mr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="spc.get_stats_x_mr_x">
+<!--[spc.get_stats_x_mr_x]--><tt class="descclassname">spc.</tt><tt class="descname">get_stats_x_mr_x</tt><big>(</big><em>data</em>, <em>size</em><big>)</big><a class="headerlink" href="#spc.get_stats_x_mr_x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="spc.prepare_data_none">
+<!--[spc.prepare_data_none]--><tt class="descclassname">spc.</tt><tt class="descname">prepare_data_none</tt><big>(</big><em>data</em>, <em>size</em><big>)</big><a class="headerlink" href="#spc.prepare_data_none" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="spc.prepare_data_p">
+<!--[spc.prepare_data_p]--><tt class="descclassname">spc.</tt><tt class="descname">prepare_data_p</tt><big>(</big><em>data</em>, <em>size</em><big>)</big><a class="headerlink" href="#spc.prepare_data_p" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="spc.prepare_data_u">
+<!--[spc.prepare_data_u]--><tt class="descclassname">spc.</tt><tt class="descname">prepare_data_u</tt><big>(</big><em>data</em>, <em>size</em><big>)</big><a class="headerlink" href="#spc.prepare_data_u" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="spc.prepare_data_x_bar_r_r">
+<!--[spc.prepare_data_x_bar_r_r]--><tt class="descclassname">spc.</tt><tt class="descname">prepare_data_x_bar_r_r</tt><big>(</big><em>data</em>, <em>size</em><big>)</big><a class="headerlink" href="#spc.prepare_data_x_bar_r_r" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="spc.prepare_data_x_bar_rs_x">
+<!--[spc.prepare_data_x_bar_rs_x]--><tt class="descclassname">spc.</tt><tt class="descname">prepare_data_x_bar_rs_x</tt><big>(</big><em>data</em>, <em>size</em><big>)</big><a class="headerlink" href="#spc.prepare_data_x_bar_rs_x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="spc.prepare_data_x_bar_s_s">
+<!--[spc.prepare_data_x_bar_s_s]--><tt class="descclassname">spc.</tt><tt class="descname">prepare_data_x_bar_s_s</tt><big>(</big><em>data</em>, <em>size</em><big>)</big><a class="headerlink" href="#spc.prepare_data_x_bar_s_s" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="spc.prepare_data_x_mr">
+<!--[spc.prepare_data_x_mr]--><tt class="descclassname">spc.</tt><tt class="descname">prepare_data_x_mr</tt><big>(</big><em>data</em>, <em>size</em><big>)</big><a class="headerlink" href="#spc.prepare_data_x_mr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="spc.test_beyond_limits">
+<!--[spc.test_beyond_limits]--><tt class="descclassname">spc.</tt><tt class="descname">test_beyond_limits</tt><big>(</big><em>data</em>, <em>center</em>, <em>lcl</em>, <em>ucl</em><big>)</big><a class="headerlink" href="#spc.test_beyond_limits" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="spc.test_violating_runs">
+<!--[spc.test_violating_runs]--><tt class="descclassname">spc.</tt><tt class="descname">test_violating_runs</tt><big>(</big><em>data</em>, <em>center</em>, <em>lcl</em>, <em>ucl</em><big>)</big><a class="headerlink" href="#spc.test_violating_runs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="index.html" title="previous chapter">Welcome to spc&#8217;s documentation!</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/intro.txt">Show Source</a></li>
+            </ul>
+            <h3>Quick search</h3>
+            <form class="search" action="search.html" method="get">
+              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
+              <input type="hidden" name="check_keywords" value="yes" />
+              <input type="hidden" name="area" value="default" />
+            </form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to spc&#8217;s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">spc v0.1 documentation</a> &raquo;</li>
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2008, Michal Nowikowski.
+      Last updated on Jan 03, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+    </div>
+  </body>
+</html>
